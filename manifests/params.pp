@@ -112,6 +112,7 @@ class rundeck::params {
     'ldap' => {
       'server'                  => undef,
       'port'                    => '389',
+      'use_ssl'                 => false,
       'force_binding'           => false,
       'force_binding_use_root'  => false,
       'bind_dn'                 => undef,
@@ -124,12 +125,15 @@ class rundeck::params {
       'role_base_dn'            => undef,
       'role_name_attribute'     => 'cn',
       'role_member_attribute'   => 'memberUid',
+      'role_member_are_dns'     => false,
       'role_object_class'       => 'group',
+      'role_prefix'             => undef,
       'nested_groups'           => true
     },
     'active_directory' => {
       'server'                  => undef,
       'port'                    => '389',
+      'use_ssl'                 => false,
       'force_binding'           => true,
       'force_binding_use_root'  => true,
       'bind_dn'                 => undef,
@@ -142,8 +146,10 @@ class rundeck::params {
       'role_base_dn'            => undef,
       'role_name_attribute'     => 'cn',
       'role_member_attribute'   => 'member',
+      'role_member_are_dns'     => true,
       'role_object_class'       => 'group',
       'supplemental_roles'      => 'user',
+      'role_prefix'             => undef,
       'nested_groups'           => true
     }
   }
