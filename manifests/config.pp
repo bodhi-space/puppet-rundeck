@@ -27,6 +27,7 @@ class rundeck::config(
   $service_logs_dir      = $rundeck::service_logs_dir,
   $service_name          = $rundeck::service_name,
   $mail_config           = $rundeck::mail_config,
+  $jvm_args              = $rundeck::jvm_args,
   $security_config       = $rundeck::security_config,
   $acl_policies          = $rundeck::acl_policies
 ) inherits rundeck::params {
