@@ -117,7 +117,7 @@ class rundeck::config(
     mode   => '0755'
   }
 
-  create_resource('rundeck::config::plugin', $plugins)
+  create_resources('rundeck::config::plugin', $plugins)
 
   class { 'rundeck::config::global::framework': } ->
   class { 'rundeck::config::global::project': } ->
