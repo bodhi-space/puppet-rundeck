@@ -29,7 +29,8 @@ class rundeck::config(
   $mail_config           = $rundeck::mail_config,
   $jvm_args              = $rundeck::jvm_args,
   $security_config       = $rundeck::security_config,
-  $acl_policies          = $rundeck::acl_policies
+  $acl_policies          = $rundeck::acl_policies,
+  $plugins               = $rundeck::plugins,
 ) inherits rundeck::params {
 
   $framework_config = deep_merge($rundeck::params::framework_config, $rundeck::framework_config)
@@ -115,6 +116,8 @@ class rundeck::config(
     group  => root,
     mode   => '0755'
   }
+
+  ensure_resource('rundeck::config::plugin', $plugins)
 
   class { 'rundeck::config::global::framework': } ->
   class { 'rundeck::config::global::project': } ->
