@@ -30,7 +30,6 @@ class rundeck::config(
   $jvm_args              = $rundeck::jvm_args,
   $security_config       = $rundeck::security_config,
   $acl_policies          = $rundeck::acl_policies,
-  $plugins               = $rundeck::plugins,
 ) inherits rundeck::params {
 
   $framework_config = deep_merge($rundeck::params::framework_config, $rundeck::framework_config)
@@ -117,7 +116,7 @@ class rundeck::config(
     mode   => '0755'
   }
 
-  create_resources('rundeck::config::plugin', $plugins)
+  create_resources('rundeck::config::plugin', hiera('rundeck::plugins'))
 
   class { 'rundeck::config::global::framework': } ->
   class { 'rundeck::config::global::project': } ->
