@@ -31,7 +31,7 @@ class rundeck::install(
   $group = $rundeck::group
 
   case $::osfamily {
-    'RedHat': {
+    'RedHat', 'Amazon': {
       if $manage_yum_repo == true {
         yumrepo { 'bintray-rundeck':
           baseurl  => 'http://dl.bintray.com/rundeck/rundeck-rpm/',

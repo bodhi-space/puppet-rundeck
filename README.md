@@ -132,7 +132,7 @@ A definition for managing rundeck projects
 **Parameters within `rundeck::project`:**
 
 #####`file_copier_provider`
-The type of proivder that will be used for copying files to each of the nodes
+The type of provider that will be used for copying files to each of the nodes
 
 #####`node_executor_provider`
 The type of provider that will be used to gather node resources
@@ -218,8 +218,8 @@ The group permission that rundeck is installed as.
 * [`rundeck::install`](#class-install): Manages the installation of the rundeck packages
 * [`rundeck::service`](#class-service): Manages the rundeck service
 * [`rundeck::config`](#class-config): Manages all the global configuration of the rundeck application
-* [`rundeck::config::global::framework`](#class-framework): Manage the configuration of shell tools and core rundeck services
-* [`rundeck::config::global::project`](#class-project): Managed the rundeck project configuration
+* [`rundeck::config::global::framework`](#class-framework): Manages the configuration of shell tools and core rundeck services
+* [`rundeck::config::global::project`](#class-project): Manages the rundeck project configuration
 * [`rundeck::config::global::rundeck_config`](#class-rundeckconfig): Manages the rundeck webapp configuration file
 * [`rundeck::config::global::ssl`](#class-ssl): Manages the ssl configuration for the rundeck webapp
 
