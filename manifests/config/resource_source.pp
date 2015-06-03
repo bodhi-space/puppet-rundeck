@@ -199,7 +199,7 @@ define rundeck::config::resource_source(
     mode    => '0775',
     require => File[$projects_dir],
   }
-  ensure_resource('file', "${pd}/${project_name}/etc", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'require' => File["${pd}/${project_name}"]} )
+  #ensure_resource('file', "${pd}/${project_name}/etc", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'require' => File["${pd}/${project_name}"]} )
 
   $properties_dir  = "${pd}/${project_name}/etc"
   $properties_file = "${properties_dir}/project.properties"
