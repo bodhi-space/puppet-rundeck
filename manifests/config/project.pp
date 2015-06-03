@@ -38,6 +38,7 @@
 define rundeck::config::project(
   $file_copier_provider   = $rundeck::params::file_copier_provider,
   $node_executor_provider = $rundeck::params::node_executor_provider,
+  $ssh_authentication     = $rundeck::params::ssh_authentication,
   $resource_sources       = $rundeck::params::resource_sources,
   $framework_config       = $rundeck::framework_config,
   $user                   = $rundeck::user,
@@ -52,8 +53,9 @@ define rundeck::config::project(
   $projects_dir     = $framework_properties['framework.projects.dir']
 
   validate_absolute_path($ssh_keypath)
-  validate_re($file_copier_provider, ['jsch-scp','script-copy','stub'])
+  validate_re($file_copier_provider, ['jsch-scp', 'script-copy', 'stub'])
   validate_re($node_executor_provider, ['jsch-ssh', 'script-exec', 'stub'])
+  validate_re($ssh_authentication, ['privateKey', 'password'])
   validate_hash($resource_sources)
   validate_absolute_path($projects_dir)
   validate_re($user, '[a-zA-Z0-9]{3,}')
@@ -105,7 +107,7 @@ define rundeck::config::project(
     path    => $properties_file,
     section => '',
     setting => 'project.ssh-authentication',
-    value   => 'privateKey',
+    value   => $ssh_authentication,
     require => File[$properties_file]
   }
 
