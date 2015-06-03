@@ -192,13 +192,13 @@ define rundeck::config::resource_source(
 
 # This is already declared in the project and ensure_resources() is generating an error.  Grrrr
   #ensure_resource('file', "${pd}/${project_name}", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'mode' => '0775', 'require' => File[$rundeck::config::project::project_dir]} )
-  file {  $project_dir :
-    ensure  => directory,
-    owner   => $user,
-    group   => $group,
-    mode    => '0775',
-    require => File[$projects_dir],
-  }
+  #file {  $project_dir :
+  #  ensure  => directory,
+  #  owner   => $user,
+  #  group   => $group,
+  #  mode    => '0775',
+  #  require => File[$projects_dir],
+  #}
   #ensure_resource('file', "${pd}/${project_name}/etc", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'require' => File["${pd}/${project_name}"]} )
 
   $properties_dir  = "${pd}/${project_name}/etc"
