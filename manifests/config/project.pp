@@ -39,7 +39,7 @@ define rundeck::config::project(
   $file_copier_provider   = $rundeck::params::file_copier_provider,
   $node_executor_provider = $rundeck::params::node_executor_provider,
   $ssh_authentication     = $rundeck::params::ssh_authentication,
-  $sudo_command_enabled   = $rundeck::params::sudo_command_enabled,,
+  $sudo_command_enabled   = $rundeck::params::sudo_command_enabled,
   $resource_sources       = $rundeck::params::resource_sources,
   $framework_config       = $rundeck::framework_config,
   $user                   = $rundeck::user,
