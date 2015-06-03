@@ -184,7 +184,7 @@ define rundeck::config::resource_source(
 
   validate_string($project_name)
   validate_integer($num)
-  validate_re($type, ['^file$', '^directory$', '^url$', '^script$'])
+  validate_re($type, ['^file$', '^directory$', '^url$', '^script$', '^aws-ec2$'])
   validate_bool($inc_server)
   validate_absolute_path($pd)
   validate_re($u, '[a-zA-Z0-9]{3,}')
