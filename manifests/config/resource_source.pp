@@ -183,7 +183,7 @@ define rundeck::config::resource_source(
   }
 
   validate_string($project_name)
-  validate_re($num, '[0-9]*')
+  validate_re($num, '[1-9][1-90]*')
   validate_re($type, ['^file$', '^directory$', '^url$', '^script$'])
   validate_bool($inc_server)
   validate_absolute_path($pd)
@@ -363,7 +363,7 @@ define rundeck::config::resource_source(
       validate_string ($ec2_access_key)
       validate_string ($ec2_secret_key)
       validate_string ($ec2_mapping_params)
-      validate_re     ($ec2_refresh_interval)
+      validate_re     ($ec2_refresh_interval, '[1-9][1-90]*')
       validate_bool   ($ec2_running_only)
       validate_bool   ($ec2_use_default_mapping)
 
