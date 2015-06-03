@@ -163,6 +163,7 @@ class rundeck::params {
 
   $projects_default_org = ''
   $projects_default_desc = ''
+  $projects = {}
 
   $file_copier_provider = 'jsch-scp'
   $node_executor_provider = 'jsch-ssh'

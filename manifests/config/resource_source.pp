@@ -75,23 +75,29 @@
 #
 define rundeck::config::resource_source(
   $project_name,
-  $framework_config    = {},
-  $number              = '',
-  $source_type         = '',
-  $file                = '',
-  $include_server_node = '',
-  $resource_format     = '',
-  $url                 = '',
-  $url_timeout         = '',
-  $url_cache           = '',
-  $directory           = '',
-  $script_file         = '',
-  $script_args         = '',
-  $script_args_quoted  = '',
-  $script_interpreter  = '',
-  $projects_dir        = '',
-  $user                = '',
-  $group               = ''
+  $framework_config         = {},
+  $number                   = '',
+  $source_type              = '',
+  $file                     = '',
+  $include_server_node      = '',
+  $resource_format          = '',
+  $url                      = '',
+  $url_timeout              = '',
+  $url_cache                = '',
+  $directory                = '',
+  $script_file              = '',
+  $script_args              = '',
+  $script_args_quoted       = '',
+  $script_interpreter       = '',
+  $projects_dir             = '',
+  $user                     = '',
+  $group                    = '',
+  $ec2_access_key           = '',
+  $ec2_secret_key           = '',
+  $ec2_mapping_params       = '',
+  $ec2_refresh_interval     = '30',
+  $ec2_running_only         = true,
+  $ec2_use_default_mapping  = true
 ) {
 
   include rundeck::params
@@ -177,7 +183,7 @@ define rundeck::config::resource_source(
   }
 
   validate_string($project_name)
-  validate_re($num, '[1-9]*')
+  validate_re($num, '[0-9]*')
   validate_re($type, ['^file$', '^directory$', '^url$', '^script$'])
   validate_bool($inc_server)
   validate_absolute_path($pd)
@@ -350,6 +356,68 @@ define rundeck::config::resource_source(
         section => '',
         setting => "resources.source.${num}.config.argsQuoted",
         value   => $saq,
+        require => File[$properties_file]
+      }
+    }
+    'aws-ec2': {
+      validate_string ($ec2_access_key)
+      validate_string ($ec2_secret_key)
+      validate_string ($ec2_mapping_params)
+      validate_re     ($ec2_refresh_interval)
+      validate_bool   ($ec2_running_only)
+      validate_bool   ($ec2_use_default_mapping)
+
+      ini_setting { "resources.source.${num}.config.accessKey":
+        ensure  => present,
+        path    => $properties_file,
+        section => '',
+        setting => "resources.source.${num}.config.accessKey",
+        value   => $ec2_access_key,
+        require => File[$properties_file]
+      }
+
+      ini_setting { "resources.source.${num}.config.secretKey":
+        ensure  => present,
+        path    => $properties_file,
+        section => '',
+        setting => "resources.source.${num}.config.secretKey",
+        value   => $ec2_secret_key,
+        require => File[$properties_file]
+      }
+
+      ini_setting { "resources.source.${num}.config.mappingParams":
+        ensure  => present,
+        path    => $properties_file,
+        section => '',
+        setting => "resources.source.${num}.config.mappingParams",
+        value   => $ec2_mapping_params,
+        require => File[$properties_file]
+      }
+
+      ini_setting { "resources.source.${num}.config.refreshInterval":
+        ensure  => present,
+        path    => $properties_file,
+        section => '',
+        setting => "resources.source.${num}.config.refreshInterval",
+        value   => $ec2_refresh_interval,
+        require => File[$properties_file]
+      }
+
+      ini_setting { "resources.source.${num}.config.runningOnly":
+        ensure  => present,
+        path    => $properties_file,
+        section => '',
+        setting => "resources.source.${num}.config.runningOnly",
+        value   => $ec2_running_only,
+        require => File[$properties_file]
+      }
+
+      ini_setting { "resources.source.${num}.config.useDefaultMapping":
+        ensure  => present,
+        path    => $properties_file,
+        section => '',
+        setting => "resources.source.${num}.config.useDefaultMapping",
+        value   => $ec2_use_default_mapping,
         require => File[$properties_file]
       }
     }

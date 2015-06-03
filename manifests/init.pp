@@ -123,6 +123,7 @@ class rundeck (
   $framework_config             = $rundeck::params::framework_config,
   $projects_organization        = $rundeck::params::projects_default_org,
   $projects_description         = $rundeck::params::projects_default_desc,
+  $projects                     = $rundeck::params::projects,
   $rd_loglevel                  = $rundeck::params::loglevel,
   $rss_enabled                  = $rundeck::params::rss_enabled,
   $clustermode_enabled          = $rundeck::params::clustermode_enabled,
@@ -156,6 +157,7 @@ class rundeck (
   validate_bool($ssl_enabled)
   validate_string($projects_organization)
   validate_string($projects_description)
+  validate_hash($projects)
   validate_re($rd_loglevel, ['^ALL$', '^DEBUG$', '^ERROR$', '^FATAL$', '^INFO$', '^OFF$', '^TRACE$', '^WARN$'])
   validate_bool($rss_enabled)
   validate_bool($clustermode_enabled)

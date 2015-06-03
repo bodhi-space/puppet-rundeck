@@ -14,6 +14,7 @@ class rundeck::config(
   $ssl_enabled           = $rundeck::ssl_enabled,
   $projects_organization = $rundeck::projects_default_org,
   $projects_description  = $rundeck::projects_default_desc,
+  $projects              = $rundeck::projects,
   $rd_loglevel           = $rundeck::rd_loglevel,
   $rss_enabled           = $rundeck::rss_enabled,
   $clustermode_enabled   = $rundeck::clustermode_enabled,
@@ -117,6 +118,8 @@ class rundeck::config(
   }
 
   create_resources('rundeck::config::plugin', hiera('rundeck::plugins'))
+
+  create_resources('rundeck::config::project', hiera('rundeck::projects'))
 
   class { 'rundeck::config::global::framework': } ->
   class { 'rundeck::config::global::project': } ->
