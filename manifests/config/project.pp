@@ -39,6 +39,7 @@ define rundeck::config::project(
   $file_copier_provider   = $rundeck::params::file_copier_provider,
   $node_executor_provider = $rundeck::params::node_executor_provider,
   $ssh_authentication     = $rundeck::params::ssh_authentication,
+  $sudo_command_enabled   = $rundeck::params::sudo_command_enabled,,
   $resource_sources       = $rundeck::params::resource_sources,
   $framework_config       = $rundeck::framework_config,
   $user                   = $rundeck::user,
@@ -117,6 +118,15 @@ define rundeck::config::project(
     section => '',
     setting => 'project.ssh-keypath',
     value   => $ssh_keypath,
+    require => File[$properties_file]
+  }
+
+  ini_setting { "${name}::project.sudo-command-enabled":
+    ensure  => present,
+    path    => $properties_file,
+    section => '',
+    setting => 'project.sudo-command-enabled',
+    value   => $sudo_command_enabled,
     require => File[$properties_file]
   }
 

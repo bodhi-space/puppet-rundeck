@@ -168,6 +168,7 @@ class rundeck::params {
   $file_copier_provider = 'jsch-scp'
   $node_executor_provider = 'jsch-ssh'
   $ssh_authentication = 'privateKey'
+  $sudo_command_enabled = false
 
   $url_cache = true
   $url_timeout = '30'
