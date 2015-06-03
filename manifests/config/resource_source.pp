@@ -190,7 +190,7 @@ define rundeck::config::resource_source(
   validate_re($u, '[a-zA-Z0-9]{3,}')
   validate_re($g, '[a-zA-Z0-9]{3,}')
 
-  ensure_resource('file', "${pd}/${project_name}", {'ensure' => 'directory', 'owner' => $user, 'group' => $group}, 'mode' => '0775', 'require' => File[$rundeck::config::project::project_dir] )
+  ensure_resource('file', "${pd}/${project_name}", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'mode' => '0775', 'require' => File[$rundeck::config::project::project_dir]} )
   file {  $project_dir :
     ensure  => directory,
     owner   => $user,
