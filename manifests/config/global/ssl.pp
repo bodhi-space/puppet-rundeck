@@ -12,6 +12,7 @@ class rundeck::config::global::ssl(
   $key_password        = $rundeck::config::key_password,
   $truststore          = $rundeck::config::truststore,
   $truststore_password = $rundeck::config::truststore_password,
+  $truststore_keys     = $rundeck::config::truststore_keys,
   $properties_dir      = $rundeck::config::properties_dir,
   $user                = $rundeck::config::user,
   $group               = $rundeck::config::group,
@@ -26,6 +27,29 @@ class rundeck::config::global::ssl(
   Ini_setting {
     notify => Service[$service_name],
   }
+
+  define rundeck::config::global::ssl::truststore_file ($cert=$cert, $user=$user, $group=$group, $truststore=$truststore, $truststore_password=$truststore_password) {
+    file { "${truststore}-${title}.cert":
+      ensure  => present,
+      owner   => $user,
+      group   => $group,
+      mode    => '0640',
+      content => "$cert",
+    }
+    java_ks { "${title}:${truststore}":
+      ensure        => latest,
+      certificate   => "${truststore}-${title}.cert",
+      password      => $truststore_password,
+      trustcacerts  => true,
+    }
+  }
+  $truststore_defaults = {
+    user                => $user,
+    group               => $group,
+    truststore          => $truststore,
+    truststore_password => $truststore_password,
+  }
+  create_resources(rundeck::config::global::ssl::truststore_file, $truststore_keys, $truststore_defaults)
 
   file { $properties_file:
     ensure  => present,

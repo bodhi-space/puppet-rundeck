@@ -81,6 +81,9 @@
 # [*truststore_password*]
 #  The password for the given truststore.
 #
+# [*truststore_keys*]
+#  Hash of keyname => cert pairs to store in truststore file
+#
 # [*service_name*]
 #  The name of the rundeck service.
 #
@@ -134,6 +137,7 @@ class rundeck (
   $key_password                 = $rundeck::params::key_password,
   $truststore                   = $rundeck::params::truststore,
   $truststore_password          = $rundeck::params::truststore_password,
+  $truststore_keys              = $rundeck::params::truststore_keys,
   $service_name                 = $rundeck::params::service_name,
   $service_manage               = $rundeck::params::service_manage,
   $service_script               = $rundeck::params::service_script,
@@ -169,6 +173,7 @@ class rundeck (
   validate_string($key_password)
   validate_absolute_path($truststore)
   validate_string($truststore_password)
+  validate_hash($truststore_keys)
   validate_string($service_name)
   validate_string($package_ensure)
   validate_hash($mail_config)

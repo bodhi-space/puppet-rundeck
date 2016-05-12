@@ -206,6 +206,7 @@ class rundeck::params {
   $key_password = 'adminadmin'
   $truststore = '/etc/rundeck/ssl/truststore'
   $truststore_password = 'adminadmin'
+  $truststore_keys = {}
 
   $resource_sources = {}
 
