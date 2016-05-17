@@ -24,6 +24,12 @@
 # [*projects_dir*]
 #   The directory where rundeck is configured to store project information
 #
+# [*sudo_command_enabled*]
+#   Whether Sudo Password Authentication should be enabled
+#
+# [*sudo_prompt_max_timeout*]
+#   Maximum milliseconds to wait for input when expecting the password prompt. (default 5000)
+#
 # === Examples
 #
 # Create and manage a rundeck project:
@@ -36,14 +42,15 @@
 # }
 #
 define rundeck::config::project(
-  $file_copier_provider   = $rundeck::params::file_copier_provider,
-  $node_executor_provider = $rundeck::params::node_executor_provider,
-  $ssh_authentication     = $rundeck::params::ssh_authentication,
-  $sudo_command_enabled   = $rundeck::params::sudo_command_enabled,
-  $resource_sources       = $rundeck::params::resource_sources,
-  $framework_config       = $rundeck::framework_config,
-  $user                   = $rundeck::user,
-  $group                  = $rundeck::group
+  $file_copier_provider     = $rundeck::params::file_copier_provider,
+  $node_executor_provider   = $rundeck::params::node_executor_provider,
+  $ssh_authentication       = $rundeck::params::ssh_authentication,
+  $sudo_command_enabled     = $rundeck::params::sudo_command_enabled,
+  $sudo_prompt_max_timeout  = $rundeck::params::sudo_prompt_max_timeout,
+  $resource_sources         = $rundeck::params::resource_sources,
+  $framework_config         = $rundeck::framework_config,
+  $user                     = $rundeck::user,
+  $group                    = $rundeck::group
 ) {
 
   include rundeck::params
@@ -57,6 +64,8 @@ define rundeck::config::project(
   validate_re($file_copier_provider, ['jsch-scp', 'script-copy', 'stub'])
   validate_re($node_executor_provider, ['jsch-ssh', 'script-exec', 'stub'])
   validate_re($ssh_authentication, ['privateKey', 'password'])
+  validate_bool($sudo_command_enabled)
+  validate_integer($sudo_prompt_max_timeout)
   validate_hash($resource_sources)
   validate_absolute_path($projects_dir)
   validate_re($user, '[a-zA-Z0-9]{3,}')
@@ -127,6 +136,15 @@ define rundeck::config::project(
     section => '',
     setting => 'project.sudo-command-enabled',
     value   => $sudo_command_enabled,
+    require => File[$properties_file]
+  }
+
+  ini_setting { "${name}::project.sudo-prompt-max-timeout":
+    ensure  => present,
+    path    => $properties_file,
+    section => '',
+    setting => 'project.sudo-prompt-max-timeout',
+    value   => $sudo_prompt_max_timeout,
     require => File[$properties_file]
   }
 

@@ -169,6 +169,7 @@ class rundeck::params {
   $node_executor_provider = 'jsch-ssh'
   $ssh_authentication = 'privateKey'
   $sudo_command_enabled = false
+  $sudo_prompt_max_timeout = 5000
 
   $url_cache = true
   $url_timeout = '30'
