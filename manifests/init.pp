@@ -149,6 +149,7 @@ class rundeck (
   $group                        = $rundeck::params::group,
   $rdeck_home                   = $rundeck::params::rdeck_home,
   $jvm_args                     = $rundeck::params::jvm_args,
+  $api_tokens                   = $rundeck::params::api_tokens,
 ) inherits rundeck::params {
 
   #validate_re($package_ensure, '\d+\.\d+\.\d+')
@@ -181,6 +182,7 @@ class rundeck (
   validate_string($group)
   validate_absolute_path($rdeck_home)
   validate_string($jvm_args)
+  validate_hash($api_tokens)
 
   class { 'rundeck::install': } ->
   class { 'rundeck::config': } ->
