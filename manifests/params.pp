@@ -59,6 +59,7 @@ class rundeck::params {
     'framework.ssh.user'        => 'rundeck',
     'framework.ssh.timeout'     => '0',
     'rundeck.server.uuid'       => $::serialnumber,
+    'rundeck.tokens.file'       => '/etc/rundeck/api_tokens.properties',
   }
 
   $auth_types = ['file']
@@ -66,6 +67,9 @@ class rundeck::params {
   $auth_template = 'rundeck/jaas-auth.conf.erb'
 
   $acl_template = 'rundeck/admin.aclpolicy.erb'
+
+  $api_tokens_template = 'rundeck/api_tokens.properties.erb'
+  $api_tokens = {}
 
   $acl_policies = [
     {

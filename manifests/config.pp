@@ -36,6 +36,7 @@ class rundeck::config(
   $framework_config = deep_merge($rundeck::params::framework_config, $rundeck::framework_config)
   $auth_config      = deep_merge($rundeck::params::auth_config, $rundeck::auth_config)
   $truststore_keys  = deep_merge($rundeck::params::truststore_keys, $rundeck::truststore_keys)
+  $api_tokens       = deep_merge($rundeck::params::api_tokens, $rundeck::api_tokens)
 
   $logs_dir       = $framework_config['framework.logs.dir']
   $rdeck_base     = $framework_config['rdeck.base']
@@ -104,6 +105,15 @@ class rundeck::config(
     group   => $group,
     mode    => '0640',
     content => template('rundeck/profile.erb'),
+    notify  => Service[$service_name],
+    require => File[$properties_dir]
+  }
+
+  file { "${properties_dir}/api_tokens.properties":
+    owner   => $user,
+    group   => $group,
+    mode    => '0640',
+    content => template('rundeck/api_tokens.properties.erb'),
     notify  => Service[$service_name],
     require => File[$properties_dir]
   }
