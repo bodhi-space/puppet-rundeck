@@ -1,6 +1,3 @@
-<%- @acl_policies.each do |p| -%>
-<%- p.each do |d| -%>
----
-<%= d.to_yaml %>
-<%- end -%>
+<%- @acl_policies.each_with_index do |p, i| -%>
+<%= p.to_yaml %>
 <%- end -%>
