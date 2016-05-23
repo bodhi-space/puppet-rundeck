@@ -1,1 +1,4 @@
-<%= @acl_policies.to_yaml %>
+<%- @acl_policies.each do |p| -%>
+---
+<%= p.to_yaml %>
+<%- end -%>
