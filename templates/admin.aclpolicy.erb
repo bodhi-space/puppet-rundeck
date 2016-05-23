@@ -1,3 +1,4 @@
+---
 <%- @acl_policies.each_with_index do |policy, index| -%>
 description: <%= policy['description'] %>
 context:
@@ -6,7 +7,10 @@ for:
 <%- policy['resource_types'].each do |resource| -%>
   <%= resource['type'] %>:
   <%- resource['rules'].each do |rule| -%>
-    - <%= rule['name'] %>: '<%= rule['rule'] %>'
+    - <%= rule['name'] %>:
+    <%- rule['rule'].each do |r| -%>
+      - '<%= r %>'
+    <%- end -%>
   <%- end -%>
 <%- end -%>
 by:
@@ -23,8 +27,6 @@ by:
   <%- end -%>
 <%- end -%>
 <%- if index != (@acl_policies.length-1) -%>
-
 ---
-
 <%- end -%>
 <%- end -%>
