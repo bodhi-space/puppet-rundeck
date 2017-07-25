@@ -25,9 +25,9 @@ class rundeck::config::global::rundeck_config(
 
   $database_config = merge($rundeck::params::database_config, $rundeck::config::database_config)
 
-  file { "${properties_dir}/rundeck-config.properties":
-    ensure => absent
-  }
+#  file { "${properties_dir}/rundeck-config.properties":
+#    ensure => absent
+#  }
 
   file { $properties_file:
     ensure  => present,
