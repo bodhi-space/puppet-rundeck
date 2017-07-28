@@ -109,6 +109,15 @@ class rundeck::config(
     require => File[$properties_dir]
   }
 
+  file { "/etc/sysconfig/rundeckd":
+    ensure  => present,
+    owner   => $user,
+    group   => $group,
+    mode    => '0640',
+    content => template('rundeck/sysconfig.erb'),
+    notify  => Service[$service_name]
+  }
+
   file { "${properties_dir}/api_tokens.properties":
     owner   => $user,
     group   => $group,
