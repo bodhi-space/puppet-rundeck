@@ -100,15 +100,6 @@ class rundeck::config(
     require => File[$properties_dir]
   }
 
-  file { "${properties_dir}/profile":
-    owner   => $user,
-    group   => $group,
-    mode    => '0640',
-    content => template('rundeck/profile.erb'),
-    notify  => Service[$service_name],
-    require => File[$properties_dir]
-  }
-
   file { "/etc/sysconfig/rundeckd":
     ensure  => present,
     owner   => $user,
