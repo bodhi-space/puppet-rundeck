@@ -114,7 +114,7 @@ class rundeck::config(
     owner   => $user,
     group   => $group,
     mode    => '0640',
-    content => template('rundeck/sysconfig.erb'),
+    content => file('rundeck/sysconfig'),
     notify  => Service[$service_name]
   }
 
