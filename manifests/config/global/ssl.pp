@@ -6,6 +6,7 @@
 #
 # This private class is called from rundeck::config used to manage the ssl properties if ssl is enabled
 #
+<<<<<<< HEAD
 class rundeck::config::global::ssl(
   $keystore            = $rundeck::config::keystore,
   $keystore_password   = $rundeck::config::keystore_password,
@@ -18,14 +19,65 @@ class rundeck::config::global::ssl(
   $group               = $rundeck::config::group,
   $service_name        = $rundeck::service_name,
 ) {
+||||||| merged common ancestors
+class rundeck::config::global::ssl(
+  $keystore            = $rundeck::config::keystore,
+  $keystore_password   = $rundeck::config::keystore_password,
+  $key_password        = $rundeck::config::key_password,
+  $truststore          = $rundeck::config::truststore,
+  $truststore_password = $rundeck::config::truststore_password,
+  $properties_dir      = $rundeck::config::properties_dir,
+  $user                = $rundeck::config::user,
+  $group               = $rundeck::config::group,
+  $service_name        = $rundeck::service_name,
+) {
+=======
+class rundeck::config::global::ssl {
+
+  assert_private()
+
+  $group               = $rundeck::config::group
+  $key_password        = $rundeck::config::key_password
+  $ssl_keyfile         = $rundeck::config::ssl_keyfile
+  $ssl_certfile        = $rundeck::config::ssl_certfile
+  $keystore            = $rundeck::config::keystore
+  $keystore_password   = $rundeck::config::keystore_password
+  $properties_dir      = $rundeck::config::properties_dir
+  $service_name        = $rundeck::service_name
+  $truststore          = $rundeck::config::truststore
+  $truststore_password = $rundeck::config::truststore_password
+  $user                = $rundeck::config::user
+>>>>>>> 181220cef2093e007db5e1d8e8a5ecb424b407b5
 
   $properties_file = "${properties_dir}/ssl/ssl.properties"
 
-  ensure_resource('file', $properties_dir, {'ensure' => 'directory', 'owner' => $user, 'group' => $group} )
-  ensure_resource('file', "${properties_dir}/ssl", {'ensure' => 'directory', 'owner' => $user, 'group' => $group, 'require' => File[$properties_dir]} )
+  ensure_resource('file', $properties_dir, {
+    'ensure' => 'directory',
+    'owner'  => $user,
+    'group'  => $group
+  } )
+  ensure_resource('file', "${properties_dir}/ssl", {
+    'ensure'  => 'directory',
+    'owner'   => $user,
+    'group'   => $group,
+    'require' => File[$properties_dir]
+    } )
 
-  Ini_setting {
-    notify => Service[$service_name],
+  java_ks { "rundeck:${properties_dir}/ssl/keystore":
+    ensure       => present,
+    private_key  => $ssl_keyfile,
+    certificate  => $ssl_certfile,
+    password     => $keystore_password,
+    destkeypass  => $key_password,
+    trustcacerts => true,
+  }
+  -> java_ks { "rundeck:${properties_dir}/ssl/truststore":
+    ensure       => present,
+    private_key  => $ssl_keyfile,
+    certificate  => $ssl_certfile,
+    password     => $truststore_password,
+    destkeypass  => $key_password,
+    trustcacerts => true,
   }
 
   define rundeck::config::global::ssl::truststore_file ($cert=$cert, $user=$user, $group=$group, $truststore=$truststore, $truststore_password=$truststore_password) {
@@ -56,8 +108,7 @@ class rundeck::config::global::ssl(
     owner   => $user,
     group   => $group,
     mode    => '0640',
-    notify  => Service[$service_name],
-    require => File[$properties_dir]
+    require => File[$properties_dir],
   }
 
   ini_setting { 'keystore':
@@ -66,7 +117,7 @@ class rundeck::config::global::ssl(
     section => '',
     setting => 'keystore',
     value   => $keystore,
-    require => File[$properties_file]
+    require => File[$properties_file],
   }
 
   ini_setting { 'keystore.password':
@@ -75,7 +126,7 @@ class rundeck::config::global::ssl(
     section => '',
     setting => 'keystore.password',
     value   => $keystore_password,
-    require => File[$properties_file]
+    require => File[$properties_file],
   }
 
   ini_setting { 'key.password':
@@ -84,7 +135,7 @@ class rundeck::config::global::ssl(
     section => '',
     setting => 'key.password',
     value   => $key_password,
-    require => File[$properties_file]
+    require => File[$properties_file],
   }
 
   ini_setting { 'truststore':
@@ -93,7 +144,7 @@ class rundeck::config::global::ssl(
     section => '',
     setting => 'truststore',
     value   => $truststore,
-    require => File[$properties_file]
+    require => File[$properties_file],
   }
 
   ini_setting { 'truststore.password':
@@ -102,6 +153,6 @@ class rundeck::config::global::ssl(
     section => '',
     setting => 'truststore.password',
     value   => $truststore_password,
-    require => File[$properties_file]
+    require => File[$properties_file],
   }
 }

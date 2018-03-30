@@ -8,38 +8,40 @@
 # It sets variables according to platform
 #
 class rundeck::params {
+  $package_name = 'rundeck'
+  $package_ensure = 'installed'
+  $service_name = 'rundeckd'
+  $manage_repo = true
+  $repo_yum_source = 'http://dl.bintray.com/rundeck/rundeck-rpm/'
+  $repo_yum_gpgkey = 'https://bintray.com/user/downloadSubjectPublicKey?username=rundeck'
+  $repo_apt_source = 'https://dl.bintray.com/rundeck/rundeck-deb'
+  $repo_apt_key_id = '8756C4F765C9AC3CB6B85D62379CE192D401AB61'
+  $repo_apt_keyserver = 'keyserver.ubuntu.com'
 
   case $::osfamily {
     'Debian': {
-      $package_name = 'rundeck'
-      $package_ensure = '2.2.3-1-GA'
-      $service_name = 'rundeckd'
-      $jre_name = 'openjdk-6-jre'
-      $jre_ensure = 'installed'
-      $manage_yum_repo = false
+      $overrides_dir = '/etc/default'
     }
     'RedHat', 'Amazon': {
-      $package_name = 'rundeck'
-      $package_ensure = 'installed'
-      $service_name = 'rundeckd'
-      $jre_name = 'java-1.6.0-openjdk'
-      $jre_ensure = 'installed'
-      $manage_yum_repo = true
+      $overrides_dir = '/etc/sysconfig'
     }
     default: {
       fail("${::operatingsystem} not supported")
     }
   }
 
-  $jre_manage = true
-
   $service_manage = false
-  $service_config = ''
-  $service_script = ''
+  $service_ensure = 'running'
 
   $rdeck_base = '/var/lib/rundeck'
-  $rdeck_home = '/var/rundeck'
+  $rdeck_home = '/var/lib/rundeck'
   $service_logs_dir = '/var/log/rundeck'
+
+  $rdeck_uuid = $facts['serialnumber'] ? {
+    '0'     => fqdn_uuid($::fqdn),
+    undef   => fqdn_uuid($::fqdn),
+    default => $facts['serialnumber'],
+  }
 
   $framework_config = {
     'framework.server.name'     => $::fqdn,
@@ -49,7 +51,7 @@ class rundeck::params {
     'framework.server.username' => 'admin',
     'framework.server.password' => 'admin',
     'rdeck.base'                => '/var/lib/rundeck',
-    'framework.projects.dir'    => '/var/rundeck/projects',
+    'framework.projects.dir'    => '/var/lib/rundeck/projects',
     'framework.etc.dir'         => '/etc/rundeck',
     'framework.var.dir'         => '/var/lib/rundeck/var',
     'framework.tmp.dir'         => '/var/lib/rundeck/var/tmp',
@@ -58,7 +60,7 @@ class rundeck::params {
     'framework.ssh.keypath'     => '/var/lib/rundeck/.ssh/id_rsa',
     'framework.ssh.user'        => 'rundeck',
     'framework.ssh.timeout'     => '0',
-    'rundeck.server.uuid'       => $::serialnumber,
+    'rundeck.server.uuid'       => $rdeck_uuid,
     'rundeck.tokens.file'       => '/etc/rundeck/api_tokens.properties',
   }
 
@@ -66,7 +68,10 @@ class rundeck::params {
   $auth_users = {}
   $auth_template = 'rundeck/jaas-auth.conf.erb'
 
-  $acl_template = 'rundeck/admin.aclpolicy.erb'
+  $log_properties_template = 'rundeck/log4j.properties.erb'
+
+  $acl_template = 'rundeck/aclpolicy.erb'
+  $api_template = 'rundeck/aclpolicy.erb'
 
   $api_tokens_template = 'rundeck/api_tokens.properties.erb'
   $api_tokens = {}
@@ -75,34 +80,93 @@ class rundeck::params {
     {
       'description' => 'Admin, all access',
       'context' => {
-        'type' => 'project',
-        'rule' => '.*'
+        'project' => '.*',
       },
-      'resource_types' => [
-        { 'type'  => 'resource', 'rules' => [{'name' => 'allow','rule' => '*'}] },
-        { 'type'  => 'adhoc', 'rules' => [{'name' => 'allow','rule' => '*'}] },
-        { 'type'  => 'job', 'rules' => [{'name' => 'allow','rule' => '*'}] },
-        { 'type'  => 'node', 'rules' => [{'name' => 'allow','rule' => '*'}] }
-      ],
-      'by' => {
-        'groups'    => ['admin'],
-        'usernames' => undef
-      }
+      'for' => {
+        'resource' => [
+          {'allow' => '*'},
+        ],
+        'adhoc' => [
+          {'allow' => '*'},
+        ],
+        'job' => [
+          {'allow' => '*'},
+        ],
+        'node' => [
+          {'allow' => '*'},
+        ],
+      },
+      'by' => [{
+        'group' => ['admin']
+      }]
     },
     {
       'description' => 'Admin, all access',
       'context' => {
-        'type' => 'application',
-        'rule' => 'rundeck'
+        'application' => 'rundeck',
       },
-      'resource_types' => [
-        { 'type'  => 'resource', 'rules' => [{'name' => 'allow','rule' => '*'}] },
-        { 'type'  => 'project', 'rules' => [{'name' => 'allow','rule' => '*'}] },
-      ],
-      'by' => {
-        'groups'    => ['admin'],
-        'usernames' => undef
-      }
+      'for' => {
+        'resource' => [
+          {'allow' => '*'},
+        ],
+        'project' => [
+          {'allow' => '*'},
+        ],
+        'storage' => [
+          {'allow' => '*'},
+        ],
+      },
+      'by' => [{
+        'group' => ['admin']
+      }]
+    }
+  ]
+
+  $api_policies = [
+    {
+      'description' => 'API project level access control',
+      'context' => {
+        'project' => '.*',
+      },
+      'for' => {
+        'resource' => [
+          { 'equals' => {'kind' => 'job'}, 'allow' => ['create','delete'] },
+          { 'equals' => {'kind' => 'node'}, 'allow' => ['read','create','update','refresh'] },
+          { 'equals' => {'kind' => 'event'}, 'allow' => ['read','create'] }
+        ],
+        'adhoc' => [
+          {'allow' => ['read','run','kill']}
+        ],
+        'job' => [
+          {'allow' => ['create','read','update','delete','run','kill']}
+        ],
+        'node' => [
+          {'allow' => ['read','run']}
+        ],
+      },
+      'by' => [{
+        'group' => ['api_token_group']
+      }]
+    },
+    {
+      'description' => 'API Application level access control',
+      'context' => {
+        'application' => 'rundeck',
+      },
+      'for' => {
+        'resource' => [
+          { 'equals' => {'kind' => 'system'}, 'allow' => ['read'] }
+        ],
+        'project' => [
+          { 'match' => {'name' => '.*'}, 'allow' => ['read'] }
+        ],
+        'storage' => [
+          { 'match' => {'path' => '(keys|keys/.*)'}, 'allow' => '*' },
+        ],
+      },
+      'by' => [{
+        'group' => ['api_token_group']
+      }]
     }
   ]
 
@@ -111,7 +175,16 @@ class rundeck::params {
       'admin_user'     => $framework_config['framework.server.username'],
       'admin_password' => $framework_config['framework.server.password'],
       'auth_users'     => {},
-      'file'           => '/etc/rundeck/realm.properties'
+      'file'           => '/etc/rundeck/realm.properties',
+    },
+    'pam' => {
+      'service'            => 'sshd',
+      'supplemental_roles' => ['user'],
+      'store_pass'         => true,
+      'clear_pass'         => undef,
+      'try_first_pass'     => undef,
+      'use_first_pass'     => undef,
+      'use_unix_groups'    => undef,
     },
     'ldap' => {
       'server'                  => undef,
@@ -152,19 +225,23 @@ class rundeck::params {
       'role_member_attribute'   => 'member',
       'role_member_are_dns'     => true,
       'role_object_class'       => 'group',
+      'role_prefix'             => undef,
       'supplemental_roles'      => 'user',
       'role_prefix'             => undef,
       'nested_groups'           => true
     }
   }
 
+  $realm_template = 'rundeck/realm.properties.erb'
+
   $mail_config = {}
 
   $security_config = {
     'useHMacRequestTokens' => true,
-    'apiCookieAccess'      => true
+    'apiCookieAccess'      => true,
   }
 
+  $projects = {}
   $projects_default_org = ''
   $projects_default_desc = ''
   $projects = {}
@@ -176,7 +253,7 @@ class rundeck::params {
   $sudo_prompt_max_timeout = 5000
 
   $url_cache = true
-  $url_timeout = '30'
+  $url_timeout = 30
 
   $resource_format = 'resourcexml'
   $include_server_node = false
@@ -185,6 +262,9 @@ class rundeck::params {
 
   $script_args_quoted = true
   $script_interpreter = '/bin/bash'
+
+  $manage_user = false
+  $manage_group = false
 
   $user = 'rundeck'
   $group = 'rundeck'
@@ -203,10 +283,15 @@ class rundeck::params {
     'driverClassName' => '',
     'username'        => '',
     'password'        => '',
-    'dialect'         => ''
+    'dialect'         => '',
+    'enable_h2_logs'  => 'on',
   }
 
+  $kerberos_realms = {}
+
   $keystore = '/etc/rundeck/ssl/keystore'
+  $key_storage_type = 'file'
+  $projects_storage_type = 'filesystem'
   $keystore_password = 'adminadmin'
   $key_password = 'adminadmin'
   $truststore = '/etc/rundeck/ssl/truststore'
@@ -214,11 +299,43 @@ class rundeck::params {
   $truststore_keys = {}
 
   $resource_sources = {}
+  $gui_config = {}
+
+  $preauthenticated_config = {
+    'enabled'         => false,
+    'attributeName'   => 'REMOTE_USER_GROUPS',
+    'delimiter'       => ':',
+    'userNameHeader'  => 'X-Forwarded-Uuid',
+    'userRolesHeader' => 'X-Forwarded-Roles',
+    'redirectLogout'  => false,
+    'redirectUrl'     => '/oauth2/sign_in',
+  }
+
+  $quartz_job_threadcount = 10
 
   $jvm_args = '-Xmx1024m -Xms256m -server'
 
-  $ssl_enabled = false
-  $ssl_port = '4443'
+  $sshkey_manage = true
 
-  $package_source = 'http://dl.bintray.com/rundeck/rundeck-deb'
+  $ssl_enabled = false
+  $ssl_port = 4443
+
+  $ssl_keyfile = '/etc/rundeck/ssl/rundeck.key'
+  $ssl_certfile = '/etc/rundeck/ssl/rundeck.crt'
+
+  $web_xml = "${rdeck_base}/exp/webapp/WEB-INF/web.xml"
+  $security_role = 'user'
+  $session_timeout = 30
+
+  $rdeck_config_template = 'rundeck/rundeck-config.erb'
+
+  $file_keystorage_keys = { }
+  $file_keystorage_dir = "${framework_config['framework.var.dir']}/storage"
+
+  $manage_default_admin_policy = true
+  $manage_default_api_policy   = true
+
+  $security_roles_array_enabled = false
+  $security_roles_array         = []
+
 }

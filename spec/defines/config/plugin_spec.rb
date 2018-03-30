@@ -1,38 +1,59 @@
 require 'spec_helper'
 
-describe 'rundeck::config::plugin', :type => :define do
+describe 'rundeck::config::plugin', type: :define do
   context 'supported operating systems' do
-    ['Debian','RedHat'].each do |osfamily|
-      describe "rundeck::config::plugin definition without any parameters on #{osfamily}" do
-        name = 'rundeck-hipchat-plugin-1.0.0.jar'
-        source = 'http://search.maven.org/remotecontent?filepath=com/hbakkum/rundeck/plugins/rundeck-hipchat-plugin/1.0.0/rundeck-hipchat-plugin-1.0.0.jar'
-        plugin_dir = '/var/lib/rundeck/libext'
+    on_supported_os.each do |os, facts|
+      context "on #{os} " do
+        let :facts do
+          facts
+        end
 
-        let(:title) { name }
-        let(:params) {{
-          'source' => source
-        }}
+        describe "rundeck::config::plugin definition without any parameters on #{os}" do
+          name = 'rundeck-hipchat-plugin-1.0.0.jar'
+          source = 'http://search.maven.org/remotecontent?filepath=com/hbakkum/rundeck/plugins/rundeck-hipchat-plugin/1.0.0/rundeck-hipchat-plugin-1.0.0.jar'
+          plugin_dir = '/var/lib/rundeck/libext'
 
-        let(:facts) {{
-          :osfamily        => 'Debian',
-          :serialnumber    => 0,
-          :rundeck_version => ''
-        }}
+          let(:title) { name }
+          let(:params) do
+            {
+              'source' => source
+            }
+          end
 
-        it { should contain_file(plugin_dir).with(
-          'ensure' => 'directory'
-        ) }
+          it do
+            is_expected.to contain_archive("download plugin #{name}").with(
+              'source' => 'http://search.maven.org/remotecontent?filepath=com/hbakkum/rundeck/plugins/rundeck-hipchat-plugin/1.0.0/rundeck-hipchat-plugin-1.0.0.jar'
+            )
+          end
 
-        it { should contain_exec("download plugin #{name}").with(
-          'command' => "/usr/bin/wget #{source} -O #{plugin_dir}/#{name}"
-        ) }
+          it do
+            is_expected.to contain_file("#{plugin_dir}/#{name}").with(
+              'mode'   => '0644',
+              'owner'  => 'rundeck',
+              'group'  => 'rundeck'
+            )
+          end
+        end
 
-        it { should contain_file("#{plugin_dir}/#{name}").with(
-          'ensure' => 'present',
-          'mode'   => '0644',
-          'owner'  => 'rundeck',
-          'group'  => 'rundeck'
-        )}
+        describe "rundeck::config::plugin definition with ensure set to absent on #{os}" do
+          name = 'rundeck-hipchat-plugin-1.0.0.jar'
+          source = 'http://search.maven.org/remotecontent?filepath=com/hbakkum/rundeck/plugins/rundeck-hipchat-plugin/1.0.0/rundeck-hipchat-plugin-1.0.0.jar'
+          plugin_dir = '/var/lib/rundeck/libext'
+
+          let(:title) { name }
+          let(:params) do
+            {
+              'source' => source,
+              'ensure' => 'absent'
+            }
+          end
+
+          it do
+            is_expected.to contain_file("#{plugin_dir}/#{name}").with(
+              'ensure' => 'absent'
+            )
+          end
+        end
       end
     end
   end

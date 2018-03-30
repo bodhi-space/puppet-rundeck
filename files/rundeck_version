@@ -1,5 +1,0 @@
-
-if [ -x /usr/bin/dpkg ]; then
-  VERSION=`dpkg -l | grep rundeck | awk '{ print $3}'`
-  echo "rundeck_version=$VERSION"
-fi
