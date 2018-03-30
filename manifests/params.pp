@@ -37,10 +37,10 @@ class rundeck::params {
   $rdeck_home = '/var/lib/rundeck'
   $service_logs_dir = '/var/log/rundeck'
 
-  $rdeck_uuid = $facts['serialnumber'] ? {
+  $rdeck_uuid = $::serialnumber ? {
     '0'     => fqdn_uuid($::fqdn),
     undef   => fqdn_uuid($::fqdn),
-    default => $facts['serialnumber'],
+    default => $::serialnumber,
   }
 
   $framework_config = {
@@ -244,7 +244,6 @@ class rundeck::params {
   $projects = {}
   $projects_default_org = ''
   $projects_default_desc = ''
-  $projects = {}
 
   $file_copier_provider = 'jsch-scp'
   $node_executor_provider = 'jsch-ssh'

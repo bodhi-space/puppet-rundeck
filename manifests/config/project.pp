@@ -56,14 +56,14 @@
 define rundeck::config::project(
   $file_copier_provider     = $rundeck::params::file_copier_provider,
   $framework_config         = $rundeck::framework_config,
-  $group                    = $rundeck::group
+  $group                    = $rundeck::group,
   $node_executor_provider   = $rundeck::params::node_executor_provider,
   $projects_dir             = undef,
   $resource_sources         = $rundeck::params::resource_sources,
   $scm_import_properties    = {},
   $scm_export_properties    = {},
   $ssh_authentication       = $rundeck::params::ssh_authentication,
-  $ssh_keypath              = undef
+  $ssh_keypath              = undef,
   $sudo_command_enabled     = $rundeck::params::sudo_command_enabled,
   $sudo_prompt_max_timeout  = $rundeck::params::sudo_prompt_max_timeout,
   $user                     = $rundeck::user,

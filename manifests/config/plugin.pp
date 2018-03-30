@@ -24,8 +24,8 @@
 # }
 #
 define rundeck::config::plugin(
-  String $source,
-  Enum['present', 'absent'] $ensure = 'present',
+  $source,
+  $ensure = 'present',
 ) {
 
   include rundeck
