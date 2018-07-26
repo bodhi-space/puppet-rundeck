@@ -78,14 +78,16 @@ define rundeck::config::project(
     default => $ssh_keypath,
   }
 
-  validate_absolute_path($ssh_keypath)
+  # ssh_keypath isn't required for password based authentication
+  # validate_absolute_path($ssh_keypath)
   validate_re($file_copier_provider, ['jsch-scp', 'script-copy', 'stub'])
   validate_re($node_executor_provider, ['jsch-ssh', 'script-exec', 'stub'])
   validate_re($ssh_authentication, ['privateKey', 'password'])
   validate_bool($sudo_command_enabled)
   validate_integer($sudo_prompt_max_timeout)
   validate_hash($resource_sources)
-  validate_absolute_path($projects_dir)
+  # projects_dir is optional, Default is $RDECK_BASE/projects
+  # validate_absolute_path($projects_dir)
   validate_re($user, '[a-zA-Z0-9]{3,}')
   validate_re($group, '[a-zA-Z0-9]{3,}')
   #TODO validate new params
