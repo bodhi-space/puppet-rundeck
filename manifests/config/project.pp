@@ -58,6 +58,7 @@ define rundeck::config::project(
   $framework_config         = $rundeck::framework_config,
   $group                    = $rundeck::group,
   $node_executor_provider   = $rundeck::params::node_executor_provider,
+  $node_executor_settings   = {},
   $projects_dir             = undef,
   $resource_sources         = $rundeck::params::resource_sources,
   $scm_import_properties    = {},
