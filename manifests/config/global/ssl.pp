@@ -6,32 +6,6 @@
 #
 # This private class is called from rundeck::config used to manage the ssl properties if ssl is enabled
 #
-<<<<<<< HEAD
-class rundeck::config::global::ssl(
-  $keystore            = $rundeck::config::keystore,
-  $keystore_password   = $rundeck::config::keystore_password,
-  $key_password        = $rundeck::config::key_password,
-  $truststore          = $rundeck::config::truststore,
-  $truststore_password = $rundeck::config::truststore_password,
-  $truststore_keys     = $rundeck::config::truststore_keys,
-  $properties_dir      = $rundeck::config::properties_dir,
-  $user                = $rundeck::config::user,
-  $group               = $rundeck::config::group,
-  $service_name        = $rundeck::service_name,
-) {
-||||||| merged common ancestors
-class rundeck::config::global::ssl(
-  $keystore            = $rundeck::config::keystore,
-  $keystore_password   = $rundeck::config::keystore_password,
-  $key_password        = $rundeck::config::key_password,
-  $truststore          = $rundeck::config::truststore,
-  $truststore_password = $rundeck::config::truststore_password,
-  $properties_dir      = $rundeck::config::properties_dir,
-  $user                = $rundeck::config::user,
-  $group               = $rundeck::config::group,
-  $service_name        = $rundeck::service_name,
-) {
-=======
 class rundeck::config::global::ssl {
 
   assert_private()
@@ -47,7 +21,6 @@ class rundeck::config::global::ssl {
   $truststore          = $rundeck::config::truststore
   $truststore_password = $rundeck::config::truststore_password
   $user                = $rundeck::config::user
->>>>>>> 181220cef2093e007db5e1d8e8a5ecb424b407b5
 
   $properties_file = "${properties_dir}/ssl/ssl.properties"
 

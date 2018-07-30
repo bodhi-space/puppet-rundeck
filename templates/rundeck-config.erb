@@ -84,3 +84,5 @@ rundeck.security.authorization.preauthenticated.redirectUrl = "<%= @preauthentic
 <%- @gui_config.sort.each do |k,v| -%>
 <%= k %> = "<%= v %>"
 <%- end -%>
+
+rundeck.log4j.config.file = "/etc/rundeck/log4j.properties"
