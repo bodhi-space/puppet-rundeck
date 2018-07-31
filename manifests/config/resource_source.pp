@@ -352,56 +352,56 @@ define rundeck::config::resource_source(
       validate_bool   ($ec2_running_only)
       validate_bool   ($ec2_use_default_mapping)
 
-      ini_setting { "resources.source.${num}.config.accessKey":
+      ini_setting { "resources.source.${number}.config.accessKey":
         ensure  => present,
         path    => $properties_file,
         section => '',
-        setting => "resources.source.${num}.config.accessKey",
+        setting => "resources.source.${number}.config.accessKey",
         value   => $ec2_access_key,
         require => File[$properties_file]
       }
 
-      ini_setting { "resources.source.${num}.config.secretKey":
+      ini_setting { "resources.source.${number}.config.secretKey":
         ensure  => present,
         path    => $properties_file,
         section => '',
-        setting => "resources.source.${num}.config.secretKey",
+        setting => "resources.source.${number}.config.secretKey",
         value   => $ec2_secret_key,
         require => File[$properties_file]
       }
 
-      ini_setting { "resources.source.${num}.config.mappingParams":
+      ini_setting { "resources.source.${number}.config.mappingParams":
         ensure  => present,
         path    => $properties_file,
         section => '',
-        setting => "resources.source.${num}.config.mappingParams",
+        setting => "resources.source.${number}.config.mappingParams",
         value   => $ec2_mapping_params,
         require => File[$properties_file]
       }
 
-      ini_setting { "resources.source.${num}.config.refreshInterval":
+      ini_setting { "resources.source.${number}.config.refreshInterval":
         ensure  => present,
         path    => $properties_file,
         section => '',
-        setting => "resources.source.${num}.config.refreshInterval",
+        setting => "resources.source.${number}.config.refreshInterval",
         value   => $ec2_refresh_interval,
         require => File[$properties_file]
       }
 
-      ini_setting { "resources.source.${num}.config.runningOnly":
+      ini_setting { "resources.source.${number}.config.runningOnly":
         ensure  => present,
         path    => $properties_file,
         section => '',
-        setting => "resources.source.${num}.config.runningOnly",
+        setting => "resources.source.${number}.config.runningOnly",
         value   => $ec2_running_only,
         require => File[$properties_file]
       }
 
-      ini_setting { "resources.source.${num}.config.useDefaultMapping":
+      ini_setting { "resources.source.${number}.config.useDefaultMapping":
         ensure  => present,
         path    => $properties_file,
         section => '',
-        setting => "resources.source.${num}.config.useDefaultMapping",
+        setting => "resources.source.${number}.config.useDefaultMapping",
         value   => $ec2_use_default_mapping,
         require => File[$properties_file]
       }
