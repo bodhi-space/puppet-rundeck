@@ -96,6 +96,7 @@ class rundeck::config {
 
   file { $rundeck::service_logs_dir:
     ensure  => directory,
+    mode    => '6775'
   }
 
   ensure_resource(file, $projects_dir, {'ensure' => 'directory'})
