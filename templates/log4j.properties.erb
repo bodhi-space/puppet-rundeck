@@ -13,7 +13,7 @@ log4j.com.dtolabs.rundeck.core=INFO, cmd-logger
 #log4j.additivity.org.codehaus.groovy.grails.plugins.quartz=false
 
 # Enable audit logging
-log4j.logger.com.dtolabs.rundeck.core.authorization=info, audit
+log4j.logger.com.dtolabs.rundeck.core.authorization=<%= @rd_auditlevel %>, audit
 log4j.additivity.com.dtolabs.rundeck.core.authorization=false
 
 # Enable options remote URL logging
@@ -60,6 +60,9 @@ log4j.additivity.org.codehaus.groovy.grails.beans.factory=false
 # This logger is for Grails' public APIs within the grails. package
 log4j.logger.grails=info,stdout, server-logger
 log4j.additivity.grails=false
+
+# Disable h2database logger if desired (value = on|off)
+log4j.logger.h2database=<%= @database_config['enable_h2_logs'] %>
 
 
 ####################################################################################################

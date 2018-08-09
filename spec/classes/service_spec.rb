@@ -1,16 +1,16 @@
 require 'spec_helper'
 
 describe 'rundeck' do
-  context 'supported operating systems' do
-    ['Debian','RedHat'].each do |osfamily|
-      describe "rundeck class without any parameters on #{osfamily}" do
-        let(:params) {{ }}
-        let(:facts) {{
-          :osfamily        => osfamily,
-          :serialnumber    => 0,
-          :rundeck_version => ''
-        }}
-        it { should contain_service('rundeckd') }
+  on_supported_os.each do |os, facts|
+    context "on #{os} " do
+      let :facts do
+        facts
+      end
+
+      describe "rundeck class without any parameters on #{os}" do
+        let(:params) { {} }
+
+        it { is_expected.to contain_service('rundeckd') }
       end
     end
   end
