@@ -9,7 +9,7 @@ for:
   <%- first_key = true -%>
   <%- rules.each do |type, action| -%>
   <%- if %w( allow deny ).include?(type) -%>
-    <% if first_key -%>-<%- else %> <% end -%> <%= type %>: <%- if action.is_a? String -%>'<%= action %>'<%-else-%><%= action %><%-end%>
+    <% if first_key -%>-<%- else %> <% end -%> <%= type %>: <%- if action.is_a? String -%>'<%= action %>'<%-elsif action.is_a? Array -%>[<%= action %>]<%-else-%><%= action %><%-end%>
   <%- elsif %w( match equals contains ).include?(type) -%>
     <% if first_key -%>-<%- else %> <% end -%> <%= type %>:
     <%- action.each do |k,v| -%>
