@@ -9,18 +9,18 @@ for:
   <%- kind.each do |rules| -%>
   <%- first_key = true -%>
   <%- rules.keys.sort.each do |type| -%>
-    <%- action = rules[type] -%>
-    <%- if %w( allow deny ).include?(type) -%>
-      <% if first_key -%>-<%- else %> <% end -%> <%= type %>: <%- if action.is_a? String -%>'<%= action %>'<%-elsif action.is_a? Array -%>[<%= action %>]<%-else-%><%= action %><%-end%>
-    <%- elsif %w( match equals contains ).include?(type) -%>
-      <% if first_key -%>-<%- else %> <% end -%> <%= type %>:
-      <%- action.each do |k,v| -%>
-        <%- if %w( kind path name nodename group tags rundeck_server ).include?(k) -%><%='  '%><%- else -%><%-end-%>
-        <%= k %>: <%- if v.is_a? String -%>'<%= v %>'<%-else-%><%= v %><%-end%>
-      <%- end -%>
+  <%- action = rules[type] -%>
+  <%- if %w( allow deny ).include?(type) -%>
+    <% if first_key -%>-<%- else %> <% end -%> <%= type %>: <%- if action.is_a? String -%>'<%= action %>'<%-elsif action.is_a? Array -%>[<%= action %>]<%-else-%><%= action %><%-end%>
+  <%- elsif %w( match equals contains ).include?(type) -%>
+    <% if first_key -%>-<%- else %> <% end -%> <%= type %>:
+    <%- action.each do |k,v| -%>
+      <%- if %w( kind path name nodename group tags rundeck_server ).include?(k) -%><%='  '%><%- else -%><%-end-%>
+      <%= k %>: <%- if v.is_a? String -%>'<%= v %>'<%-else-%><%= v %><%-end%>
     <%- end -%>
-    <%- first_key = false -%>
-    <%- end -%>
+  <%- end -%>
+  <%- first_key = false -%>
+  <%- end -%>
   <%- end -%>
 <%- end -%>
 by:
