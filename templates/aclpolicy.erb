@@ -3,22 +3,24 @@ description: '<%= policy['description'] %>'
 context:
   <%= policy['context'].keys[0] %>: '<%= policy['context'].values[0] %>'
 for:
-<%- policy['for'].each do |resource,kind| -%>
+<%- policy['for'].keys.sort.each do |resource| -%>
+  <%- kind = policy['for'][resource] -%>
   <%= resource %>:
   <%- kind.each do |rules| -%>
   <%- first_key = true -%>
-  <%- rules.each do |type, action| -%>
-  <%- if %w( allow deny ).include?(type) -%>
-    <% if first_key -%>-<%- else %> <% end -%> <%= type %>: <%- if action.is_a? String -%>'<%= action %>'<%-else-%><%= action %><%-end%>
-  <%- elsif %w( match equals contains ).include?(type) -%>
-    <% if first_key -%>-<%- else %> <% end -%> <%= type %>:
-    <%- action.each do |k,v| -%>
-      <%- if %w( kind path name nodename group tags rundeck_server ).include?(k) -%><%='  '%><%- else -%><%-end-%>
-      <%= k %>: <%- if v.is_a? String -%>'<%= v %>'<%-else-%><%= v %><%-end%>
+  <%- rules.keys.sort.each do |type| -%>
+    <%- action = rules[type] -%>
+    <%- if %w( allow deny ).include?(type) -%>
+      <% if first_key -%>-<%- else %> <% end -%> <%= type %>: <%- if action.is_a? String -%>'<%= action %>'<%-elsif action.is_a? Array -%>[<%= action %>]<%-else-%><%= action %><%-end%>
+    <%- elsif %w( match equals contains ).include?(type) -%>
+      <% if first_key -%>-<%- else %> <% end -%> <%= type %>:
+      <%- action.each do |k,v| -%>
+        <%- if %w( kind path name nodename group tags rundeck_server ).include?(k) -%><%='  '%><%- else -%><%-end-%>
+        <%= k %>: <%- if v.is_a? String -%>'<%= v %>'<%-else-%><%= v %><%-end%>
+      <%- end -%>
     <%- end -%>
-  <%- end -%>
-  <%- first_key = false -%>
-  <%- end -%>
+    <%- first_key = false -%>
+    <%- end -%>
   <%- end -%>
 <%- end -%>
 by:
